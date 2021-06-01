@@ -20,6 +20,7 @@
 mod mock;
 
 use sp_std::prelude::*;
+use sp_std::vec;
 
 use frame_benchmarking::{account, benchmarks};
 use frame_system::RawOrigin;
