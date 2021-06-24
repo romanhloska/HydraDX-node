@@ -2418,6 +2418,14 @@ dependencies = [
 [[package]]
 name = "hydra-dx-math"
 version = "1.0.0"
+source = "git+https://github.com/galacticcouncil/hydraDX-math?tag=v1.0.0#3bcb2baa335f8f3d0ccac4aea1c80b44453201c5"
+dependencies = [
+ "primitive-types 0.7.3",
+]
+
+[[package]]
+name = "hydra-dx-math"
+version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ef1f96851e25837b8a3dc37bfa4cde2c3696fdeb5fcb279aa2ddef6b73604f31"
 dependencies = [
@@ -4534,6 +4542,30 @@ dependencies = [
 ]
 
 [[package]]
+name = "pallet-stableswap"
+version = "1.0.0"
+dependencies = [
+ "frame-benchmarking",
+ "frame-support",
+ "frame-system",
+ "frame-system-benchmarking",
+ "hydra-dx-math 1.0.0 (git+https://github.com/galacticcouncil/hydraDX-math?tag=v1.0.0)",
+ "orml-tokens",
+ "orml-traits",
+ "orml-utilities",
+ "pallet-asset-registry",
+ "parity-scale-codec 2.1.1",
+ "primitive-types 0.8.0",
+ "primitives",
+ "serde",
+ "sp-core",
+ "sp-io",
+ "sp-runtime",
+ "sp-std",
+ "substrate-wasm-builder",
+]
+
+[[package]]
 name = "pallet-staking"
 version = "3.0.0"
 source = "git+https://github.com/paritytech/substrate?branch=rococo-v1#2be8fcc4236d32786c62f6f27a98e7fe7e550807"
@@ -4718,7 +4750,7 @@ dependencies = [
  "frame-support",
  "frame-system",
  "frame-system-benchmarking",
- "hydra-dx-math",
+ "hydra-dx-math 1.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "orml-tokens",
  "orml-traits",
  "orml-utilities",
