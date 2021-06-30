@@ -195,13 +195,14 @@ pub mod pallet {
 	}
 
 	/// Intention count for current block
+	/// Stored as ( asset_a, asset_b ) combination where asset_a < asset_b
 	#[pallet::storage]
 	#[pallet::getter(fn get_intentions_count)]
 	pub type ExchangeAssetsIntentionCount<T: Config> =
 		StorageMap<_, Blake2_128Concat, (AssetId, AssetId), u32, ValueQuery>;
 
 	/// Registered intentions for current block
-	/// Stored as ( asset_a, asset_b ) combination where asset_a is meant to be exchanged for asset_b ( asset_a < asset_b)
+	/// Stored as ( asset_a, asset_b ) combination where asset_a is meant to be exchanged for asset_b
 	#[pallet::storage]
 	#[pallet::getter(fn get_intentions)]
 	pub type ExchangeAssetsIntentions<T: Config> =
