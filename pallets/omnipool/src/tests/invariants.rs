@@ -7,10 +7,13 @@ use proptest::prelude::*;
 pub const ONE: Balance = 1_000_000_000_000;
 pub const TOLERANCE: Balance = 1_000; // * 1_000 * 1_000;
 
-const BALANCE_RANGE: (Balance, Balance) = (10_000 * ONE, 10_000_000 * ONE);
+const BALANCE_RANGE: (Balance, Balance) = (100_000 * ONE, 10_000_000 * ONE);
 
 fn asset_invariant(old_state: &AssetState<Balance>, new_state: &AssetState<Balance>, _desc: &str) -> FixedU128 {
 	// new state invariant / old state invariant
+
+	dbg!(old_state);
+	dbg!(new_state);
 
 	let new_s = U256::from(new_state.reserve) * U256::from(new_state.hub_reserve);
 	let s1 = new_s.integer_sqrt();
@@ -18,10 +21,13 @@ fn asset_invariant(old_state: &AssetState<Balance>, new_state: &AssetState<Balan
 	let old_s = U256::from(old_state.reserve) * U256::from(old_state.hub_reserve);
 	let s2 = old_s.integer_sqrt();
 
-	//if new_s < old_s {
-	//	println!("{} - decreased new: {:?} vs old: {:?}", _desc, new_s,old_s);
-	//}
-	//assert!(new_s >= old_s, "Invariant decreased for {}", _desc);
+	dbg!(new_s);
+	dbg!(old_s);
+
+	if new_s < old_s {
+		println!("{} - decreased new: {:?} vs old: {:?}", _desc, new_s, old_s);
+	}
+	assert!(new_s >= old_s, "Invariant decreased for {}", _desc);
 
 	let s1_u128 = Balance::try_from(s1).unwrap();
 	let s2_u128 = Balance::try_from(s2).unwrap();
@@ -53,8 +59,7 @@ fn asset_reserve() -> impl Strategy<Value = Balance> {
 
 fn trade_amount() -> impl Strategy<Value = Balance> {
 	// Use one trade amount for now to follow python's testing
-	Just(1000 * ONE)
-	//1000..10_000 * ONE
+	1000..10_000 * ONE
 }
 
 fn fixed_fee() -> impl Strategy<Value = FixedU128> {
@@ -704,7 +709,7 @@ fn case_01() {
 			let new_state_hdx = <Assets<Test>>::get(HDX).unwrap();
 
 			// invariant does not decrease
-			assert_ne!(new_state_200.reserve, old_state_200.reserve);
+			// assert_ne!(new_state_200.reserve, old_state_200.reserve);
 			assert_ne!(new_state_300.reserve, old_state_300.reserve);
 
 			assert_asset_invariant(
