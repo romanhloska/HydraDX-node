@@ -432,3 +432,52 @@ fn simple_buy_with_fee_works() {
 			);
 		});
 }
+
+#[test]
+fn buy_for_hub_asset_not_allowed() {
+	ExtBuilder::default()
+		.with_endowed_accounts(vec![
+			(Omnipool::protocol_account(), 0, 100000000000000000),
+			(Omnipool::protocol_account(), 2, 2000000000000000),
+			(LP1, 200, 5_000 * ONE),
+			(LP2, LRNA, 1_000 * ONE),
+		])
+		.with_registered_asset(LRNA)
+		.with_registered_asset(200)
+		.with_initial_pool(
+			1000 * ONE,
+			NATIVE_AMOUNT,
+			FixedU128::from_float(0.5),
+			FixedU128::from(1),
+		)
+		.build()
+		.execute_with(|| {
+			assert_ok!(Omnipool::add_token(
+				Origin::signed(LP1),
+				200,
+				5_000_000_000_000_000,
+				FixedU128::from_float(0.65)
+			));
+
+			assert_ok!(Omnipool::add_token(
+				Origin::signed(LP2),
+				LRNA,
+				1_000_000_000_000_000,
+				FixedU128::from_float(0.65)
+			));
+
+			assert_ok!(Omnipool::set_asset_tradable_state(
+				Origin::root(),
+				200,
+				Tradable::Frozen
+			));
+
+			assert_noop!(Omnipool::buy(
+				Origin::signed(LP2),
+				200,
+				LRNA,
+				1_000_000_000_000,
+				1_000_000_000_000
+			), Error::<Test>::NotAllowed);
+		});
+}
