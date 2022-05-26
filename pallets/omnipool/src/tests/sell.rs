@@ -475,3 +475,40 @@ fn simple_sell_with_fee_works() {
 			);
 		});
 }
+
+#[test]
+fn hub_asset_sell_not_allowed() {
+	ExtBuilder::default()
+		.with_endowed_accounts(vec![
+			(Omnipool::protocol_account(), DAI, 1000 * ONE),
+			(Omnipool::protocol_account(), HDX, NATIVE_AMOUNT),
+			(LP2, 200, 2000 * ONE),
+			(LP1, LRNA, 1000 * ONE),
+		])
+		.with_registered_asset(100)
+		.with_registered_asset(200)
+		.with_initial_pool(
+			1000 * ONE,
+			NATIVE_AMOUNT,
+			FixedU128::from_float(0.5),
+			FixedU128::from(1),
+		)
+		.build()
+		.execute_with(|| {
+			let token_amount = 2000 * ONE;
+			let token_price = FixedU128::from_float(1.0);
+
+			assert_ok!(Omnipool::add_token(Origin::signed(LP2), 200, token_amount, token_price,));
+
+			assert_ok!(Omnipool::set_asset_tradable_state(
+				Origin::root(),
+				200,
+				Tradable::Frozen
+			));
+
+			assert_noop!(
+				Omnipool::sell(Origin::signed(LP1), LRNA, 200, 100 * ONE, 0),
+				Error::<Test>::NotAllowed
+			);
+		});
+}
